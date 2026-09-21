@@ -29,10 +29,31 @@
 }
 
 .logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   text-decoration: none;
+  transition: opacity 0.2s ease;
+  width: fit-content;
+}
+
+.logo:hover {
+  opacity: 0.9;
+}
+
+.footerLogoWrapper {
+  background: #ffffff;
+  padding: 6px 14px;
+  border-radius: var(--radius-lg, 12px);
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.footerLogo {
+  height: 38px;
+  max-width: 150px;
+  object-fit: contain;
+  display: block;
 }
 
 .logoIcon {

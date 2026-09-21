@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logoImg from '../assets/images/logo.png';
 import styles from './Footer.module.css';
 
 const Footer = () => {
@@ -8,9 +9,10 @@ const Footer = () => {
       <div className={styles.container}>
         <div className={styles.topSection}>
           <div className={styles.brandInfo}>
-            <Link to="/" className={styles.logo}>
-              <span className={styles.logoIcon}>⚡</span>
-              <span className={styles.logoText}>StudyGen</span>
+            <Link to="/" className={styles.logo} aria-label="StudyGen Home">
+              <div className={styles.footerLogoWrapper}>
+                <img src={logoImg} alt="StudyGen" className={styles.footerLogo} />
+              </div>
             </Link>
             <p className={styles.tagline}>
               Accelerating human mastery with AI-driven personalized learning paths, diagnostic assessment, and interactive study rooms.

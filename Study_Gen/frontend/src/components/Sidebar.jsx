@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Button from './Button';
+import logoImg from '../assets/images/logo.png';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ isOpen, onClose, onOpenAIDrawer }) => {
@@ -35,10 +36,9 @@ const Sidebar = ({ isOpen, onClose, onOpenAIDrawer }) => {
 
       <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
         {/* Brand Logo Header */}
-        <div className={styles.logoHeader}>
-          <div className={styles.logoIcon}>⚡</div>
-          <span className={styles.logoText}>StudyGen</span>
-        </div>
+        <Link to="/dashboard" className={styles.logoHeader} aria-label="StudyGen Dashboard">
+          <img src={logoImg} alt="StudyGen" className={styles.sidebarLogo} />
+        </Link>
 
         {/* Pinned Action Button */}
         <div className={styles.actionWrapper}>

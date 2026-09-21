@@ -17,8 +17,21 @@
 .logoHeader {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0.5rem 1.25rem;
+  padding: 0.25rem 0.25rem 1.25rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.logoHeader:hover {
+  opacity: 0.9;
+}
+
+.sidebarLogo {
+  height: 48px;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .logoIcon {

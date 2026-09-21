@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import Card from '../components/Card';
+import logoImg from '../assets/images/logo.png';
 import styles from './Auth.module.css';
 
 const API_BASE = 'http://localhost:8080/api';
@@ -117,7 +118,11 @@ const Auth = () => {
       <Card hoverable={false} className={styles.authCard}>
         {/* Header Branding */}
         <div className={styles.cardHeader}>
-          <div className={styles.brandBadge}>⚡ StudyGen</div>
+          <div className={styles.brandLogoWrapper}>
+            <Link to="/" aria-label="StudyGen Home">
+              <img src={logoImg} alt="StudyGen" className={styles.authLogo} />
+            </Link>
+          </div>
           <h1 className={styles.cardTitle}>
             {activeTab === 'login' ? 'Welcome back' : 'Create your account'}
           </h1>

@@ -29,6 +29,24 @@
   margin-bottom: 1.75rem;
 }
 
+.brandLogoWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.authLogo {
+  height: 52px;
+  max-width: 190px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.authLogo:hover {
+  transform: scale(1.02);
+}
+
 .brandBadge {
   display: inline-block;
   font-family: var(--font-display);

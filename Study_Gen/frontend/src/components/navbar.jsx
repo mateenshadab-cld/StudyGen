@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from './Button';
+import logoImg from '../assets/images/logo.png';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
@@ -19,9 +20,8 @@ const Navbar = () => {
     <header className={styles.navbarHeader}>
       <div className={styles.container}>
         {/* Logo */}
-        <Link to="/" className={styles.logo}>
-          <span className={styles.logoIcon}>⚡</span>
-          <span className={styles.logoText}>StudyGen</span>
+        <Link to="/" className={styles.logo} aria-label="StudyGen Home">
+          <img src={logoImg} alt="StudyGen" className={styles.navbarLogo} />
         </Link>
 
         {/* Desktop Navigation Links */}
