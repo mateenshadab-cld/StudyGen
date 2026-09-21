@@ -12,6 +12,8 @@ export default function ProductivityAnalytics({ refreshTrigger = 0 }) {
     bestDayName: 'None',
     bestMinutes: 0,
     currentStreak: 0,
+    longestStreak: 0,
+    totalActiveDays: 0,
     weekDays: [],
     heatmap: [],
   });
@@ -35,21 +37,24 @@ export default function ProductivityAnalytics({ refreshTrigger = 0 }) {
     fetchAnalytics();
   }, [refreshTrigger]);
 
-  // Transform backend heatmap data format for the reusable Heatmap component
+  // Transform backend heatmap data format accurately
   const heatmapData = (analytics.heatmap || []).map((entry) => ({
     date: entry.date,
     minutesLogged: entry.totalMinutes || 0,
-    activityCount: entry.sessionCount || 1,
+    activityCount: entry.count !== undefined ? entry.count : 0,
     intensityLevel: entry.intensityLevel,
   }));
 
-  // Weekdays SVG Bar Chart calculations
+  // Evenly spaced Weekdays SVG Bar Chart
   const weekDays = analytics.weekDays || [];
-  const maxMinutes = Math.max(...weekDays.map((d) => d.minutes || 0), 60); // min scale 60m
+  const maxMinutes = Math.max(...weekDays.map((d) => d.minutes || 0), 60);
   const chartHeight = 110;
-  const barWidth = 24;
-  const gap = 16;
-  const chartWidth = Math.max(280, weekDays.length * (barWidth + gap) + gap);
+  const chartWidth = 500;
+  const numDays = Math.max(1, weekDays.length);
+  const horizontalPadding = 32;
+  const availableWidth = chartWidth - horizontalPadding * 2;
+  const slotWidth = availableWidth / numDays;
+  const barWidth = 26;
 
   return (
     <div className={styles.container}>
@@ -98,9 +103,11 @@ export default function ProductivityAnalytics({ refreshTrigger = 0 }) {
           <div className={styles.statInfo}>
             <span className={styles.statLabel}>Best Day</span>
             <span className={styles.statValueHighlight}>
-              {analytics.bestDayName}
-              {analytics.bestMinutes > 0 && (
-                <span className={styles.bestSub}>({analytics.bestMinutes}m)</span>
+              {analytics.bestDay || analytics.bestDayName || 'None'}
+              {(analytics.bestDayMinutes > 0 || analytics.bestMinutes > 0) && (
+                <span className={styles.bestSub}>
+                  ({analytics.bestDayMinutes || analytics.bestMinutes}m)
+                </span>
               )}
             </span>
           </div>
@@ -136,36 +143,36 @@ export default function ProductivityAnalytics({ refreshTrigger = 0 }) {
             >
               {/* Horizontal grid guide lines */}
               <line
-                x1="10"
+                x1={horizontalPadding - 12}
                 y1={25}
-                x2={chartWidth - 10}
+                x2={chartWidth - horizontalPadding + 12}
                 y2={25}
                 stroke="#f1f5f9"
                 strokeWidth="1"
                 strokeDasharray="4 4"
               />
               <line
-                x1="10"
+                x1={horizontalPadding - 12}
                 y1={25 + chartHeight / 2}
-                x2={chartWidth - 10}
+                x2={chartWidth - horizontalPadding + 12}
                 y2={25 + chartHeight / 2}
                 stroke="#f1f5f9"
                 strokeWidth="1"
                 strokeDasharray="4 4"
               />
               <line
-                x1="10"
+                x1={horizontalPadding - 12}
                 y1={25 + chartHeight}
-                x2={chartWidth - 10}
+                x2={chartWidth - horizontalPadding + 12}
                 y2={25 + chartHeight}
                 stroke="#e2e8f0"
                 strokeWidth="1"
               />
 
               {weekDays.map((d, index) => {
-                const x = gap + index * (barWidth + gap);
+                const x = horizontalPadding + index * slotWidth + (slotWidth - barWidth) / 2;
                 const safeMinutes = d.minutes || 0;
-                const barH = safeMinutes > 0 ? Math.max(6, Math.round((safeMinutes / maxMinutes) * chartHeight)) : 0;
+                const barH = safeMinutes > 0 ? Math.max(8, Math.round((safeMinutes / maxMinutes) * chartHeight)) : 0;
                 const y = 25 + chartHeight - barH;
                 const isHovered = hoveredBar === index;
                 const isToday = index === weekDays.length - 1;
@@ -240,9 +247,16 @@ export default function ProductivityAnalytics({ refreshTrigger = 0 }) {
         )}
       </div>
 
-      {/* Consistency Heatmap */}
+      {/* Consistency & Study Activity Heatmap */}
       <div className={styles.heatmapWrapper}>
-        <Heatmap data={heatmapData} days={60} />
+        <Heatmap
+          data={heatmapData}
+          days={60}
+          currentStreak={analytics.currentStreak}
+          longestStreak={analytics.longestStreak}
+          totalActiveDays={analytics.totalActiveDays}
+          todayMinutes={analytics.todayMinutes}
+        />
       </div>
     </div>
   );

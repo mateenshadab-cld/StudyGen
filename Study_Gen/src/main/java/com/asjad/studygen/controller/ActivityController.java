@@ -54,6 +54,8 @@ public class ActivityController {
             String bestDay,
             int bestDayMinutes,
             int currentStreak,
+            int longestStreak,
+            int totalActiveDays,
             List<WeekDayActivity> weekDays,
             List<AnalyticsService.HeatmapDayEntry> heatmap
     ) {}
@@ -157,6 +159,8 @@ public class ActivityController {
                 bestDayName,
                 bestMinutes,
                 currentStreak,
+                streakData.longestStreak(),
+                streakData.totalActiveDays(),
                 weekDays,
                 streakData.heatmap()
         ));

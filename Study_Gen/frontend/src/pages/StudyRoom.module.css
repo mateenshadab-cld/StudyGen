@@ -1,10 +1,13 @@
 .container {
-  max-width: 1280px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem 1rem;
+  padding: 0 0 3rem 0;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.75rem;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 /* Header */
@@ -117,11 +120,15 @@
   grid-template-columns: 1fr;
   gap: 1.75rem;
   align-items: start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1100px) {
   .roomGrid {
-    grid-template-columns: 460px 1fr;
+    grid-template-columns: 390px minmax(0, 1fr);
   }
 }
 
@@ -129,16 +136,25 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .analyticsColumn {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .sectionBlock {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* ====================================================
