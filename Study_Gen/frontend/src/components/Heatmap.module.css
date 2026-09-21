@@ -1,0 +1,88 @@
+.heatmapCard {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  font-size: 1.25rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legendLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.gridContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 0.25rem;
+}
+
+.square {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  transition: transform var(--transition-fast);
+  cursor: pointer;
+}
+
+.square:hover {
+  transform: scale(1.3);
+  z-index: 10;
+}
+
+/* Intensity levels */
+.level0 {
+  background-color: #ebedf0;
+}
+
+.level1 {
+  background-color: #9be9a8;
+}
+
+.level2 {
+  background-color: #40c463;
+}
+
+.level3 {
+  background-color: #30a14e;
+}
+
+.level4 {
+  background-color: #216e39;
+}
