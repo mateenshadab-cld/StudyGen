@@ -60,6 +60,7 @@ export default function Profile() {
 
   const [profile, setProfile] = useState(null);
   const [heatmapData, setHeatmapData] = useState([]);
+  const [heatmapStats, setHeatmapStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -81,13 +82,14 @@ export default function Profile() {
 
       setProfile(profileRes.data);
       setEditName(profileRes.data.fullName || '');
+      setHeatmapStats(heatmapRes.data);
 
       // Format heatmap logs for 365-day graph
       const rawHeatmap = heatmapRes.data?.heatmap || [];
       const formattedHeatmap = rawHeatmap.map((entry) => ({
         date: entry.date,
         minutesLogged: entry.totalMinutes || 0,
-        activityCount: entry.sessionCount || 1,
+        activityCount: entry.count ?? entry.sessionCount ?? (entry.totalMinutes > 0 ? 1 : 0),
         intensityLevel: entry.intensityLevel,
       }));
       setHeatmapData(formattedHeatmap);
@@ -144,9 +146,11 @@ export default function Profile() {
       { axis: 'Algorithms', score: 20 },
     ];
 
-    const size = 300;
-    const center = size / 2;
-    const radius = 95;
+    const viewBoxWidth = 360;
+    const viewBoxHeight = 310;
+    const centerX = viewBoxWidth / 2; // 180
+    const centerY = viewBoxHeight / 2; // 155
+    const radius = 80;
     const totalAxes = radarData.length;
 
     // Helper to calculate (x, y) for an axis at given percentage (0..1)
@@ -154,8 +158,8 @@ export default function Profile() {
       const angle = (index * 2 * Math.PI) / totalAxes - Math.PI / 2;
       const r = radius * pct;
       return {
-        x: center + r * Math.cos(angle),
-        y: center + r * Math.sin(angle),
+        x: centerX + r * Math.cos(angle),
+        y: centerY + r * Math.sin(angle),
       };
     };
 
@@ -171,7 +175,10 @@ export default function Profile() {
 
     return (
       <div className={styles.radarWrapper}>
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className={styles.radarSvg}>
+        <svg
+          viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
+          className={styles.radarSvg}
+        >
           {/* Concentric Grid Rings */}
           {rings.map((ring, idx) => {
             const ringPoints = Array.from({ length: totalAxes }, (_, i) => {
@@ -197,8 +204,8 @@ export default function Profile() {
             return (
               <line
                 key={i}
-                x1={center}
-                y1={center}
+                x1={centerX}
+                y1={centerY}
                 x2={outer.x}
                 y2={outer.y}
                 stroke="#cbd5e1"
@@ -232,15 +239,44 @@ export default function Profile() {
             </circle>
           ))}
 
-          {/* Axis Labels */}
+          {/* Axis Labels with dynamic anchoring to prevent clipping */}
           {radarData.map((d, i) => {
-            const labelPos = getCoordinates(i, 1.25);
+            let labelPos;
+            let anchor = 'middle';
+            let dy = 4;
+
+            if (i === 0) {
+              labelPos = getCoordinates(i, 1.28);
+              anchor = 'middle';
+              dy = -4;
+            } else if (i === 1) {
+              labelPos = getCoordinates(i, 1.22);
+              anchor = 'start';
+              dy = 3;
+            } else if (i === 2) {
+              labelPos = getCoordinates(i, 1.22);
+              anchor = 'start';
+              dy = 6;
+            } else if (i === 3) {
+              labelPos = getCoordinates(i, 1.28);
+              anchor = 'middle';
+              dy = 14;
+            } else if (i === 4) {
+              labelPos = getCoordinates(i, 1.22);
+              anchor = 'end';
+              dy = 6;
+            } else {
+              labelPos = getCoordinates(i, 1.22);
+              anchor = 'end';
+              dy = 3;
+            }
+
             return (
               <text
                 key={i}
                 x={labelPos.x}
-                y={labelPos.y + 4}
-                textAnchor="middle"
+                y={labelPos.y + dy}
+                textAnchor={anchor}
                 className={styles.radarLabel}
               >
                 {d.axis}
@@ -248,6 +284,24 @@ export default function Profile() {
             );
           })}
         </svg>
+
+        {/* Domain Skill Progress Breakdown */}
+        <div className={styles.skillListGrid}>
+          {radarData.map((d, i) => (
+            <div key={i} className={styles.skillItem}>
+              <div className={styles.skillHeader}>
+                <span className={styles.skillName}>{d.axis}</span>
+                <span className={styles.skillScore}>{d.score}%</span>
+              </div>
+              <div className={styles.skillProgressBar}>
+                <div
+                  className={styles.skillProgressFill}
+                  style={{ width: `${Math.min(100, Math.max(8, d.score))}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
@@ -465,7 +519,16 @@ export default function Profile() {
           </div>
 
           <div className={styles.heatmapWrapper}>
-            <Heatmap data={heatmapData} days={365} />
+            <Heatmap
+              data={heatmapData}
+              days={365}
+              currentStreak={heatmapStats?.currentStreak ?? profile?.currentStreak ?? 0}
+              longestStreak={heatmapStats?.longestStreak ?? 0}
+              totalActiveDays={heatmapStats?.totalActiveDays ?? 0}
+              todayMinutes={heatmapStats?.todayMinutes ?? 0}
+              embedded={true}
+              showTitle={false}
+            />
           </div>
 
           {/* Activity Type Legend Strip */}

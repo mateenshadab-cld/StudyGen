@@ -10,6 +10,8 @@ const Heatmap = ({
   longestStreak,
   totalActiveDays,
   todayMinutes,
+  embedded = false,
+  showTitle = true,
 }) => {
   const [hoveredCell, setHoveredCell] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
@@ -109,14 +111,12 @@ const Heatmap = ({
     });
   }
 
-  // Fallback / passed stats
-  const activeToday = todayMinutes !== undefined ? todayMinutes > 0 : computedTodayMins > 0;
+  // Display metrics
+  const displayStreak = currentStreak !== undefined ? currentStreak : 0;
+  const displayActiveDays = totalActiveDays !== undefined ? totalActiveDays : computedActiveDays;
   const displayTodayMins = todayMinutes !== undefined ? todayMinutes : computedTodayMins;
-  const displayStreak = currentStreak !== undefined ? currentStreak : (activeToday ? 1 : 0);
-  const displayActiveDays = totalActiveDays !== undefined && totalActiveDays > 0
-    ? totalActiveDays
-    : computedActiveDays;
-  const displayHours = Math.round((computedTotalMinutes / 60) * 10) / 10;
+  const activeToday = displayTodayMins > 0;
+  const displayHours = (computedTotalMinutes / 60).toFixed(1);
 
   const handleMouseEnter = (cell, e) => {
     if (cell.isFuture) return;
@@ -133,14 +133,16 @@ const Heatmap = ({
   };
 
   return (
-    <div className={styles.heatmapCard}>
+    <div className={`${styles.heatmapCard} ${embedded ? styles.embeddedCard : ''}`}>
       {/* Top Header with Title and Status Badges */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
-          <div className={styles.titleRow}>
-            <span className={styles.icon}>🔥</span>
-            <h3 className={styles.title}>Consistency & Study Activity</h3>
-          </div>
+          {showTitle && (
+            <div className={styles.titleRow}>
+              <span className={styles.icon}>🔥</span>
+              <h3 className={styles.title}>Consistency & Study Activity</h3>
+            </div>
+          )}
 
           <div className={styles.statusPills}>
             <div
